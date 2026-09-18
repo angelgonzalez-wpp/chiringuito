@@ -1,0 +1,89 @@
+### Variables
+@base_url = http://localhost:3000
+
+###############################################
+# PING
+###############################################
+
+### Ping API
+GET {{base_url}}/
+
+###############################################
+# USUARIOS
+###############################################
+
+### Listar usuarios
+GET {{base_url}}/api/usuarios
+
+### Obtener usuario por ID
+GET {{base_url}}/api/usuarios/1
+
+### Crear usuario
+POST {{base_url}}/api/usuarios
+Content-Type: application/json
+
+{
+  "nombre": "Nuevo Usuario",
+  "email": "nuevo@example.com",
+  "password": "123456",
+  "es_admin": false
+}
+
+### Actualizar usuario
+PUT {{base_url}}/api/usuarios/1
+Content-Type: application/json
+
+{
+  "nombre": "Ana Actualizada",
+  "email": "ana@example.com",
+  "es_admin": true
+}
+
+### Eliminar usuario
+DELETE {{base_url}}/api/usuarios/1
+
+###############################################
+# CONCIERTOS
+###############################################
+
+### Listar conciertos
+GET {{base_url}}/api/conciertos
+
+### Listar conciertos destacados
+GET {{base_url}}/api/conciertos/destacados
+
+### Obtener concierto por ID
+GET {{base_url}}/api/conciertos/1
+
+### Crear concierto
+POST {{base_url}}/api/conciertos
+Content-Type: application/json
+
+{
+  "titulo": "Noche Electrónica",
+  "descripcion": "DJs invitados internacionales",
+  "fecha": "2026-11-05",
+  "hora": "23:00:00",
+  "generos": "Electrónica, Techno",
+  "precio": 20.00,
+  "imagen": "https://example.com/electronica.jpg",
+  "destacado": true
+}
+
+### Actualizar concierto
+PUT {{base_url}}/api/conciertos/1
+Content-Type: application/json
+
+{
+  "titulo": "Noche de Rock (Actualizado)",
+  "descripcion": "Nueva descripción",
+  "fecha": "2026-10-16",
+  "hora": "21:30:00",
+  "generos": "Rock",
+  "precio": 18.00,
+  "imagen": "https://example.com/rock2.jpg",
+  "destacado": true
+}
+
+### Eliminar concierto
+DELETE {{base_url}}/api/conciertos/1

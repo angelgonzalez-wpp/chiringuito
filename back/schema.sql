@@ -1,0 +1,26 @@
+CREATE DATABASE IF NOT EXISTS chiringuito;
+USE chiringuito;
+
+-- Tabla de usuarios (puede ser admin o no)
+CREATE TABLE IF NOT EXISTS usuarios (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  nombre VARCHAR(100) NOT NULL,
+  email VARCHAR(150) NOT NULL UNIQUE,
+  password VARCHAR(255) NOT NULL,
+  es_admin BOOLEAN NOT NULL DEFAULT FALSE,
+  creado_en TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Tabla de conciertos
+CREATE TABLE IF NOT EXISTS conciertos (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  titulo VARCHAR(150) NOT NULL,
+  descripcion TEXT,
+  fecha DATE NOT NULL,
+  hora TIME NOT NULL,
+  generos VARCHAR(255),
+  precio DECIMAL(10,2) NOT NULL DEFAULT 0,
+  imagen VARCHAR(500),
+  destacado BOOLEAN NOT NULL DEFAULT FALSE,
+  creado_en TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
