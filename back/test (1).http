@@ -15,7 +15,7 @@ GET {{base_url}}/
 ### Listar usuarios
 GET {{base_url}}/api/usuarios
 
-### Obtener usuario por ID
+### Obtener usuario por ID@
 GET {{base_url}}/api/usuarios/1
 
 ### Crear usuario
