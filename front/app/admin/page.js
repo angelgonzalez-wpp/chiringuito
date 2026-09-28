@@ -15,7 +15,7 @@ export default function AdminPage() {
   const [error, setError] = useState(null);
 
   const [busqueda, setBusqueda] = useState('');
-  const [filtro, setFiltro] = useState('todos'); // todos | proximos | pasados
+  const [filtro, setFiltro] = useState('todos');
 
   const [modalAbierto, setModalAbierto] = useState(false);
   const [conciertoEditando, setConciertoEditando] = useState(null);
@@ -29,7 +29,7 @@ export default function AdminPage() {
       const res = await fetch(`${API_URL}/api/conciertos`, { cache: 'no-store' });
       if (!res.ok) throw new Error('No se pudieron cargar los conciertos');
       const data = await res.json();
-      setConciertos(data);
+      setConciertos(Array.isArray(data) ? data : []);
     } catch (err) {
       setError(err.message);
     } finally {
@@ -44,7 +44,8 @@ export default function AdminPage() {
   const hoy = useMemo(() => new Date().toISOString().slice(0, 10), []);
 
   const totales = useMemo(() => {
-    const proximos = conciertos.filter((c) => c.fecha.slice(0, 10) >= hoy).length;
+    const proximos = conciertos.filter((c) => c.fecha?.slice(0, 10) >= hoy).length;
+
     return {
       total: conciertos.length,
       proximos,
@@ -56,10 +57,10 @@ export default function AdminPage() {
     return conciertos.filter((c) => {
       const coincideTexto =
         !busqueda ||
-        c.titulo.toLowerCase().includes(busqueda.toLowerCase()) ||
+        c.titulo?.toLowerCase().includes(busqueda.toLowerCase()) ||
         c.generos?.toLowerCase().includes(busqueda.toLowerCase());
 
-      const esProximo = c.fecha.slice(0, 10) >= hoy;
+      const esProximo = c.fecha?.slice(0, 10) >= hoy;
       const coincideFiltro =
         filtro === 'todos' ||
         (filtro === 'proximos' && esProximo) ||
@@ -79,27 +80,24 @@ export default function AdminPage() {
     setModalAbierto(true);
   };
 
-  const manejarGuardado = (conciertoGuardado) => {
-    setConciertos((prev) => {
-      const existe = prev.some((c) => c.id === conciertoGuardado.id);
-      if (existe) {
-        return prev.map((c) => (c.id === conciertoGuardado.id ? conciertoGuardado : c));
-      }
-      return [...prev, conciertoGuardado];
-    });
+  const manejarGuardado = async () => {
     setModalAbierto(false);
+    await cargarConciertos();
   };
 
   const confirmarEliminar = async () => {
     if (!conciertoAEliminar) return;
+
     setBorrando(true);
     try {
       const res = await fetch(`/api/conciertos/${conciertoAEliminar.id}`, {
         method: 'DELETE'
       });
+
       if (!res.ok) throw new Error('No se pudo eliminar el concierto');
-      setConciertos((prev) => prev.filter((c) => c.id !== conciertoAEliminar.id));
+
       setConciertoAEliminar(null);
+      await cargarConciertos();
     } catch (err) {
       alert(err.message);
     } finally {
@@ -120,6 +118,7 @@ export default function AdminPage() {
             <h1 className="font-display text-4xl mb-1">Panel de Administración</h1>
             <p className="text-stone text-sm">Gestiona los conciertos de El CiD</p>
           </div>
+
           <button
             onClick={abrirCrear}
             className="bg-olive hover:bg-olive-dark transition-colors text-white px-5 py-2.5 text-sm font-medium flex items-center gap-2 self-start sm:self-auto"
@@ -137,7 +136,6 @@ export default function AdminPage() {
           </button>
         </div>
 
-        {/* STATS */}
         <div className="grid grid-cols-3 gap-4 mb-8">
           <div className="border border-black/10 p-5">
             <p className="eyebrow text-stone mb-1">TOTAL CONCIERTOS</p>
@@ -153,7 +151,6 @@ export default function AdminPage() {
           </div>
         </div>
 
-        {/* BUSCADOR + FILTROS */}
         <div className="flex flex-col sm:flex-row gap-3 mb-8 border border-black/10 p-3">
           <input
             value={busqueda}
@@ -161,6 +158,7 @@ export default function AdminPage() {
             placeholder="🔍 Buscar por artista o género..."
             className="flex-1 px-3 py-2 bg-transparent focus:outline-none text-sm placeholder:text-stone/50"
           />
+
           <div className="flex gap-2">
             {[
               { key: 'todos', label: 'Todos' },
@@ -182,7 +180,6 @@ export default function AdminPage() {
           </div>
         </div>
 
-        {/* LISTADO */}
         {cargando ? (
           <p className="text-stone text-center py-16">Cargando conciertos...</p>
         ) : error ? (

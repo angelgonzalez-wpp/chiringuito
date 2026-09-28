@@ -10,7 +10,7 @@ const formatearFechaCorta = (fechaISO) => {
 };
 
 export default function AdminConciertoRow({ concierto, onEditar, onEliminar }) {
-  const { titulo, descripcion, fecha, hora, generos, precio, imagen } = concierto;
+  const { titulo, descripcion, fecha, hora, generos, precio, imagen, destacado } = concierto;
   const esGratis = !precio || Number(precio) === 0;
   const primerGenero = generos?.split(',')[0]?.trim();
 
@@ -21,7 +21,7 @@ export default function AdminConciertoRow({ concierto, onEditar, onEliminar }) {
         <img
           src={
             imagen ||
-            'https://images.unsplash.com/photo-1459749411175-04bf5292ceea?auto=format&fit=crop&w=400&q=80'
+            '/images/MultitudEnUnConcierto.png'
           }
           alt={titulo}
           className="absolute inset-0 w-full h-full object-cover"
@@ -31,7 +31,14 @@ export default function AdminConciertoRow({ concierto, onEditar, onEliminar }) {
       <div className="flex-1 min-w-0">
         <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2">
           <div>
-            <h3 className="font-display text-lg leading-tight">{titulo}</h3>
+            <div className="flex items-center gap-2 flex-wrap">
+              <h3 className="font-display text-lg leading-tight">{titulo}</h3>
+              {destacado ? (
+                <span className="bg-olive text-white text-[10px] font-semibold px-2 py-0.5">
+                  ★ DESTACADO
+                </span>
+              ) : null}
+            </div>
             {generos ? (
               <p className="text-sm italic text-stone">{generos}</p>
             ) : null}

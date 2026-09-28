@@ -1,11 +1,18 @@
+import Image from 'next/image';
+
 export default function Footer() {
   return (
     <footer className="bg-ink text-cream/80">
       <div className="mx-auto max-w-7xl px-6 py-16 grid gap-12 md:grid-cols-3">
         <div>
-          <div className="flex items-center gap-2 mb-4">
-            <span className="text-2xl">🌵</span>
-            <span className="font-display text-lg text-cream">CiD</span>
+          <div className="flex items-center mb-4">
+            <Image
+              src="/images/ElCIdLogo.png"
+              alt="El CiD — La buena vida"
+              width={82.21}
+              height={56}
+              className="h-[56px] w-[82.21px] object-contain"
+            />
           </div>
           <p className="text-sm leading-relaxed max-w-xs">
             Tu chiringuito de referencia en Mojácar Playa. Comidas, paellas,

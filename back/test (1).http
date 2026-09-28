@@ -23,10 +23,10 @@ POST {{base_url}}/api/usuarios
 Content-Type: application/json
 
 {
-  "nombre": "Nuevo Usuario",
-  "email": "nuevo@example.com",
-  "password": "123456",
-  "es_admin": false
+  "nombre": "admin",
+  "email": "admin@example.com",
+  "password": "xxddee2323*",
+  "es_admin": true
 }
 
 ### Actualizar usuario

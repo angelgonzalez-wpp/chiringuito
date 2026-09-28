@@ -1,7 +1,7 @@
 CREATE DATABASE IF NOT EXISTS chiringuito;
 USE chiringuito;
 
--- Tabla de usuarios (puede ser admin o no)
+-- Tabla de usuarios
 CREATE TABLE IF NOT EXISTS usuarios (
   id INT AUTO_INCREMENT PRIMARY KEY,
   nombre VARCHAR(100) NOT NULL,
@@ -21,6 +21,9 @@ CREATE TABLE IF NOT EXISTS conciertos (
   generos VARCHAR(255),
   precio DECIMAL(10,2) NOT NULL DEFAULT 0,
   imagen VARCHAR(500),
+  instagram VARCHAR(500),
+  facebook VARCHAR(500),
+  youtube VARCHAR(500),
   destacado BOOLEAN NOT NULL DEFAULT FALSE,
   creado_en TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );

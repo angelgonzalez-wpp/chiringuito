@@ -36,7 +36,13 @@ const getConciertoPorId = async (req, res) => {
 
 const crearConcierto = async (req, res) => {
   try {
-    const { titulo, descripcion, fecha, hora, generos, precio, destacado } = req.body;
+
+    console.log('req.body:', req.body);
+    const {
+      titulo, descripcion, fecha, hora, generos, precio,
+      instagram, facebook, youtube, destacado
+    } = req.body;
+     
 
     if (!titulo || !fecha || !hora) {
       return res.status(400).json({ mensaje: 'Titulo, fecha y hora son obligatorios' });
@@ -48,14 +54,20 @@ const crearConcierto = async (req, res) => {
     }
 
     const [resultado] = await pool.query(
-      `INSERT INTO conciertos (titulo, descripcion, fecha, hora, generos, precio, imagen, destacado)
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
-      [titulo, descripcion || null, fecha, hora, generos || null, precio || 0, imagenUrl, destacado === 'true' || destacado === true]
+      `INSERT INTO conciertos
+       (titulo, descripcion, fecha, hora, generos, precio, imagen, instagram, facebook, youtube, destacado)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      [
+        titulo, descripcion || null, fecha, hora, generos || null, precio || 0,
+        imagenUrl, instagram || null, facebook || null, youtube || null,
+        destacado === 'true' || destacado === true
+      ]
     );
 
     res.status(201).json({
       id: resultado.insertId, titulo, descripcion, fecha, hora, generos, precio,
-      imagen: imagenUrl, destacado: destacado === 'true' || destacado === true
+      imagen: imagenUrl, instagram, facebook, youtube,
+      destacado: destacado === 'true' || destacado === true
     });
   } catch (error) {
     res.status(500).json({ mensaje: 'Error al crear el concierto', error: error.message });
@@ -64,8 +76,12 @@ const crearConcierto = async (req, res) => {
 
 const actualizarConcierto = async (req, res) => {
   try {
+    console.log('req.body:', req.body);
     const { id } = req.params;
-    const { titulo, descripcion, fecha, hora, generos, precio, destacado } = req.body;
+    const {
+      titulo, descripcion, fecha, hora, generos, precio,
+      instagram, facebook, youtube, destacado
+    } = req.body;
 
     const [actual] = await pool.query('SELECT imagen FROM conciertos WHERE id = ?', [id]);
     if (actual.length === 0) return res.status(404).json({ mensaje: 'Concierto no encontrado' });
@@ -76,15 +92,23 @@ const actualizarConcierto = async (req, res) => {
     }
 
     const [resultado] = await pool.query(
-      `UPDATE conciertos SET titulo = ?, descripcion = ?, fecha = ?, hora = ?, generos = ?, precio = ?, imagen = ?, destacado = ? WHERE id = ?`,
-      [titulo, descripcion, fecha, hora, generos, precio, imagenUrl, destacado === 'true' || destacado === true, id]
+      `UPDATE conciertos
+       SET titulo = ?, descripcion = ?, fecha = ?, hora = ?, generos = ?,
+           precio = ?, imagen = ?, instagram = ?, facebook = ?, youtube = ?, destacado = ?
+       WHERE id = ?`,
+      [
+        titulo, descripcion, fecha, hora, generos, precio, imagenUrl,
+        instagram || null, facebook || null, youtube || null,
+        destacado === 'true' || destacado === true, id
+      ]
     );
 
     if (resultado.affectedRows === 0) return res.status(404).json({ mensaje: 'Concierto no encontrado' });
 
     res.json({
       id, titulo, descripcion, fecha, hora, generos, precio,
-      imagen: imagenUrl, destacado: destacado === 'true' || destacado === true
+      imagen: imagenUrl, instagram, facebook, youtube,
+      destacado: destacado === 'true' || destacado === true
     });
   } catch (error) {
     res.status(500).json({ mensaje: 'Error al actualizar el concierto', error: error.message });

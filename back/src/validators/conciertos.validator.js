@@ -9,6 +9,9 @@ const crearConciertoValidator = [
   body('hora').notEmpty().withMessage('La hora es obligatoria')
     .matches(/^([01]\d|2[0-3]):([0-5]\d)(:[0-5]\d)?$/).withMessage('La hora debe tener formato HH:MM o HH:MM:SS'),
   body('generos').optional().isString().withMessage('Los géneros deben ser texto (ej. "Rock, Indie")'),
+  body('instagram').optional({ values: 'falsy' }).isURL({ require_protocol: true }).withMessage('Instagram debe ser una URL válida'),
+  body('facebook').optional({ values: 'falsy' }).isURL({ require_protocol: true }).withMessage('Facebook debe ser una URL válida'),
+  body('youtube').optional({ values: 'falsy' }).isURL({ require_protocol: true }).withMessage('YouTube debe ser una URL válida'),
   body('precio').notEmpty().withMessage('El precio es obligatorio')
     .isFloat({ min: 0 }).withMessage('El precio debe ser un número mayor o igual a 0').toFloat(),
   body('destacado').optional().isBoolean({ strict: false }).withMessage('destacado debe ser true o false').toBoolean()

@@ -11,18 +11,23 @@ export async function PUT(request, { params }) {
     return NextResponse.json({ mensaje: 'No autenticado' }, { status: 401 });
   }
 
-  const body = await request.json();
+  // El formulario envía multipart/form-data (incluye el fichero de imagen),
+  // así que reenviamos el cuerpo tal cual, conservando el Content-Type con su boundary.
+  const body = await request.arrayBuffer();
+  const contentType = request.headers.get('content-type') || 'application/json';
 
   const backendRes = await fetch(`${API_URL}/api/conciertos/${params.id}`, {
     method: 'PUT',
     headers: {
-      'Content-Type': 'application/json',
+      'Content-Type': contentType,
       Authorization: `Bearer ${token}`
     },
-    body: JSON.stringify(body)
+    body
   });
 
-  const data = await backendRes.json();
+  const data = await backendRes.json().catch(() => ({
+    mensaje: 'El servidor no pudo procesar la petición'
+  }));
   return NextResponse.json(data, { status: backendRes.status });
 }
 

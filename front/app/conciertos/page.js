@@ -1,6 +1,7 @@
 import Image from 'next/image';
 import DestacadosCarousel from '@/components/DestacadosCarousel';
 import ConciertoCard from '@/components/ConciertoCard';
+import ConciertosAnimations from '@/components/ConciertosAnimations';
 
 const API_URL = process.env.API_URL || 'http://localhost:3000';
 
@@ -37,22 +38,30 @@ export default async function ConciertosPage() {
   const hayDestacados = destacados.length > 0;
 
   return (
-    <main>
+    <ConciertosAnimations>
       {/* HERO */}
       <section className="relative py-28 px-6 text-center text-white">
         <Image
-          src="https://images.unsplash.com/photo-1470229722913-7c0e2dbbafd3?auto=format&fit=crop&w=1800&q=80"
+          src="/images/MultitudEnUnConcierto.png"
           alt="Multitud en un concierto"
           fill
           priority
           className="object-cover"
         />
         <div className="absolute inset-0 bg-black/55" />
+        <div className="image-edge-vignette pointer-events-none absolute inset-0" />
 
         <div className="relative z-10 max-w-2xl mx-auto">
-          <p className="eyebrow text-gold mb-4">AGENDA MUSICAL</p>
-          <h1 className="font-display text-5xl md:text-6xl mb-6">Conciertos</h1>
-          <p className="text-white/80 leading-relaxed">
+          <p className="eyebrow text-gold mb-4" data-concerts-hero-eyebrow>
+            AGENDA MUSICAL
+          </p>
+          <h1
+            className="font-display text-5xl md:text-6xl mb-6"
+            data-concerts-hero-title
+          >
+            Conciertos
+          </h1>
+          <p className="text-white/80 leading-relaxed" data-concerts-hero-subtitle>
             Los mejores grupos y artistas del panorama nacional e
             internacional, junto al Mediterráneo. Verano 2026 en El CiD.
           </p>
@@ -61,22 +70,43 @@ export default async function ConciertosPage() {
 
       {/* DESTACADOS: solo se renderiza si hay al menos uno */}
       {hayDestacados ? (
-        <section className="bg-ink text-cream py-20 px-6">
-          <p className="eyebrow text-gold text-center mb-3">★ DESTACADOS</p>
-          <h2 className="font-display text-3xl md:text-4xl text-center mb-12">
+        <section
+          className="bg-ink text-cream py-20 px-6"
+          data-concerts-scroll-section
+        >
+          <p
+            className="eyebrow text-gold text-center mb-3"
+            data-concerts-scroll-item
+          >
+            ★ DESTACADOS
+          </p>
+          <h2
+            className="font-display text-3xl md:text-4xl text-center mb-12"
+            data-concerts-scroll-item
+          >
             Los Mejores Conciertos del Verano
           </h2>
-          <DestacadosCarousel conciertos={destacados} />
+          <div data-concerts-scroll-item>
+            <DestacadosCarousel conciertos={destacados} />
+          </div>
         </section>
       ) : null}
 
       {/* PRÓXIMOS EVENTOS */}
-      <section className="bg-cream py-20 px-6">
+      <section
+        className="bg-cream py-20 px-6"
+        data-concerts-scroll-section
+      >
         <div className="mx-auto max-w-6xl">
-          <h2 className="font-display text-3xl mb-10">🎵 Próximos Eventos</h2>
+          <h2
+            className="font-display text-3xl mb-10"
+            data-concerts-scroll-item
+          >
+            🎵 Próximos Eventos
+          </h2>
 
           {conciertos.length === 0 ? (
-            <p className="text-stone">
+            <p className="text-stone" data-concerts-scroll-item>
               No hay conciertos programados por ahora. ¡Vuelve pronto!
             </p>
           ) : (
@@ -90,14 +120,23 @@ export default async function ConciertosPage() {
       </section>
 
       {/* NEWSLETTER */}
-      <section className="bg-olive text-white py-16 px-6 text-center">
-        <h2 className="font-display text-2xl md:text-3xl mb-3">
+      <section
+        className="bg-olive text-white py-16 px-6 text-center"
+        data-concerts-scroll-section
+      >
+        <h2
+          className="font-display text-2xl md:text-3xl mb-3"
+          data-concerts-scroll-item
+        >
           No te pierdas ningún concierto
         </h2>
-        <p className="text-white/80 mb-8">
+        <p className="text-white/80 mb-8" data-concerts-scroll-item>
           Síguenos en redes sociales o escríbenos para recibir la agenda en tu correo.
         </p>
-        <form className="flex flex-col sm:flex-row gap-3 justify-center max-w-md mx-auto">
+        <form
+          className="flex flex-col sm:flex-row gap-3 justify-center max-w-md mx-auto"
+          data-concerts-scroll-item
+        >
           <input
             type="email"
             placeholder="tu@email.com"
@@ -111,6 +150,6 @@ export default async function ConciertosPage() {
           </button>
         </form>
       </section>
-    </main>
+    </ConciertosAnimations>
   );
 }
