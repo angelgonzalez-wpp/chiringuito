@@ -182,7 +182,7 @@ export default function HomePage() {
       {/* LA PLAYA */}
       <section className="bg-cream py-24 px-6" data-scroll-section>
         <div className="mx-auto max-w-6xl grid md:grid-cols-2 gap-12 items-center">
-          <div data-scroll-item>
+          <div className="order-2 md:order-1" data-scroll-item>
             <p className="eyebrow text-olive mb-3">LA PLAYA</p>
             <h2 className="font-display text-4xl md:text-5xl leading-tight mb-6">
               El Mediterráneo,
@@ -200,7 +200,7 @@ export default function HomePage() {
               la arena y una bebida fría en la mano. Así es la buena vida.
             </p>
           </div>
-          <div className="relative aspect-[4/5] w-full overflow-hidden" data-scroll-item>
+          <div className="relative order-1 aspect-[4/5] w-full overflow-hidden md:order-2" data-scroll-item>
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src="/images/costaMediterranea.png"

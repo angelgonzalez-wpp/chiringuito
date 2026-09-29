@@ -20,6 +20,7 @@ export default function DestacadosCarousel({ conciertos }) {
   const indiceAnteriorRef = useRef(indice);
   const direccionRef = useRef(1);
   const transicionActivaRef = useRef(false);
+  const touchStartXRef = useRef(null);
 
   useLayoutEffect(() => {
     if (indiceAnteriorRef.current === indice) return;
@@ -85,12 +86,40 @@ export default function DestacadosCarousel({ conciertos }) {
       1
     );
 
+  const iniciarDeslizamiento = (event) => {
+    touchStartXRef.current = event.touches[0]?.clientX ?? null;
+  };
+
+  const terminarDeslizamiento = (event) => {
+    const inicio = touchStartXRef.current;
+    const fin = event.changedTouches[0]?.clientX;
+    touchStartXRef.current = null;
+
+    if (inicio === null || fin === undefined) return;
+
+    const desplazamiento = fin - inicio;
+    if (Math.abs(desplazamiento) < 50) return;
+
+    if (desplazamiento < 0) {
+      siguiente();
+    } else {
+      anterior();
+    }
+  };
+
   const actual = conciertos[indice];
   const esGratis = !actual.precio || Number(actual.precio) === 0;
 
   return (
     <div className="relative max-w-4xl mx-auto">
-      <div className="group relative aspect-[16/9] w-full overflow-hidden bg-stone/20">
+      <div
+        className="group relative aspect-[4/5] w-full touch-pan-y overflow-hidden bg-stone/20 sm:aspect-[16/10] md:aspect-[16/9]"
+        onTouchStart={iniciarDeslizamiento}
+        onTouchEnd={terminarDeslizamiento}
+        onTouchCancel={() => {
+          touchStartXRef.current = null;
+        }}
+      >
         <div className="absolute inset-0" ref={slideRef}>
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
@@ -104,33 +133,35 @@ export default function DestacadosCarousel({ conciertos }) {
           <div className="image-edge-vignette pointer-events-none absolute inset-0" />
           <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/20 to-transparent" />
 
-          <div className="absolute bottom-0 left-0 right-0 p-8 text-white">
-            <div className="flex gap-2 mb-4 flex-wrap">
+          <div className="absolute bottom-0 left-0 right-0 p-5 text-white sm:p-6 md:p-8">
+            <div className="mb-3 flex flex-wrap gap-2 sm:mb-4">
               {actual.generos
                 ?.split(',')
                 .slice(0, 2)
                 .map((g) => (
                   <span
                     key={g}
-                    className="bg-gold text-ink text-xs font-semibold px-3 py-1"
+                    className="bg-gold px-2 py-1 text-[10px] font-semibold sm:px-3 sm:text-xs"
                   >
                     {g.trim().toUpperCase()}
                   </span>
                 ))}
-              <span className="bg-olive text-white text-xs font-semibold px-3 py-1">
+              <span className="bg-olive px-2 py-1 text-[10px] font-semibold text-white sm:px-3 sm:text-xs">
                 ★ DESTACADO
               </span>
             </div>
 
-            <h3 className="font-display text-3xl md:text-4xl mb-2">{actual.titulo}</h3>
+            <h3 className="mb-2 font-display text-2xl sm:text-3xl md:text-4xl">{actual.titulo}</h3>
             {actual.descripcion ? (
-              <p className="text-white/80 max-w-xl mb-4">{actual.descripcion}</p>
+              <p className="mb-3 line-clamp-2 max-w-xl text-sm text-white/80 sm:mb-4 sm:text-base">
+                {actual.descripcion}
+              </p>
             ) : null}
 
-            <div className="flex flex-wrap items-center gap-4 text-sm">
+            <div className="flex flex-wrap items-center gap-x-3 gap-y-2 text-xs sm:gap-4 sm:text-sm">
               <span>📅 {formatearFecha(actual.fecha)}</span>
               <span>🕒 {actual.hora?.slice(0, 5)}h</span>
-              <span className="bg-gold text-ink px-3 py-1 text-xs font-semibold">
+              <span className="bg-gold px-2 py-1 text-[10px] font-semibold text-ink sm:px-3 sm:text-xs">
                 {esGratis ? 'GRATIS' : `${Number(actual.precio).toFixed(0)} €`}
               </span>
             </div>
@@ -139,14 +170,14 @@ export default function DestacadosCarousel({ conciertos }) {
         <button
           onClick={anterior}
           aria-label="Concierto anterior"
-          className="absolute left-4 top-1/2 z-10 -translate-y-1/2 bg-olive hover:bg-olive-dark transition-colors w-10 h-10 flex items-center justify-center text-white"
+          className="absolute left-3 top-1/2 z-10 flex h-11 w-11 -translate-y-1/2 items-center justify-center bg-olive text-xl text-white transition-colors hover:bg-olive-dark sm:left-4 sm:h-10 sm:w-10"
         >
           ‹
         </button>
         <button
           onClick={siguiente}
           aria-label="Siguiente concierto"
-          className="absolute right-4 top-1/2 z-10 -translate-y-1/2 bg-olive hover:bg-olive-dark transition-colors w-10 h-10 flex items-center justify-center text-white"
+          className="absolute right-3 top-1/2 z-10 flex h-11 w-11 -translate-y-1/2 items-center justify-center bg-olive text-xl text-white transition-colors hover:bg-olive-dark sm:right-4 sm:h-10 sm:w-10"
         >
           ›
         </button>
