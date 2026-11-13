@@ -10,7 +10,7 @@ const login = async (req, res) => {
       return res.status(400).json({ mensaje: 'Email y password son obligatorios' });
     }
 
-    const [rows] = await pool.query('SELECT * FROM usuarios WHERE email = ?', [email]);
+    const { rows } = await pool.query('SELECT * FROM usuarios WHERE email = $1', [email]);
 
     if (rows.length === 0) {
       return res.status(401).json({ mensaje: 'Credenciales inválidas' });
@@ -45,8 +45,8 @@ const login = async (req, res) => {
 
 const perfil = async (req, res) => {
   try {
-    const [rows] = await pool.query(
-      'SELECT id, nombre, email, es_admin, creado_en FROM usuarios WHERE id = ?',
+    const { rows } = await pool.query(
+      'SELECT id, nombre, email, es_admin, creado_en FROM usuarios WHERE id = $1',
       [req.usuario.id]
     );
     if (rows.length === 0) return res.status(404).json({ mensaje: 'Usuario no encontrado' });

@@ -16,7 +16,7 @@ const subirImagenACloudinary = (buffer) => {
 
 const getConciertos = async (req, res) => {
   try {
-    const [rows] = await pool.query('SELECT * FROM conciertos ORDER BY fecha, hora');
+    const { rows } = await pool.query('SELECT * FROM conciertos ORDER BY fecha, hora');
     res.json(rows);
   } catch (error) {
     res.status(500).json({ mensaje: 'Error al obtener conciertos', error: error.message });
@@ -26,7 +26,7 @@ const getConciertos = async (req, res) => {
 const getConciertoPorId = async (req, res) => {
   try {
     const { id } = req.params;
-    const [rows] = await pool.query('SELECT * FROM conciertos WHERE id = ?', [id]);
+    const { rows } = await pool.query('SELECT * FROM conciertos WHERE id = $1', [id]);
     if (rows.length === 0) return res.status(404).json({ mensaje: 'Concierto no encontrado' });
     res.json(rows[0]);
   } catch (error) {
@@ -53,10 +53,11 @@ const crearConcierto = async (req, res) => {
       imagenUrl = await subirImagenACloudinary(req.file.buffer);
     }
 
-    const [resultado] = await pool.query(
+    const { rows } = await pool.query(
       `INSERT INTO conciertos
        (titulo, descripcion, fecha, hora, generos, precio, imagen, instagram, facebook, youtube, destacado)
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
+       RETURNING id`,
       [
         titulo, descripcion || null, fecha, hora, generos || null, precio || 0,
         imagenUrl, instagram || null, facebook || null, youtube || null,
@@ -65,7 +66,7 @@ const crearConcierto = async (req, res) => {
     );
 
     res.status(201).json({
-      id: resultado.insertId, titulo, descripcion, fecha, hora, generos, precio,
+      id: rows[0].id, titulo, descripcion, fecha, hora, generos, precio,
       imagen: imagenUrl, instagram, facebook, youtube,
       destacado: destacado === 'true' || destacado === true
     });
@@ -83,7 +84,7 @@ const actualizarConcierto = async (req, res) => {
       instagram, facebook, youtube, destacado
     } = req.body;
 
-    const [actual] = await pool.query('SELECT imagen FROM conciertos WHERE id = ?', [id]);
+    const { rows: actual } = await pool.query('SELECT imagen FROM conciertos WHERE id = $1', [id]);
     if (actual.length === 0) return res.status(404).json({ mensaje: 'Concierto no encontrado' });
 
     let imagenUrl = actual[0].imagen;
@@ -91,11 +92,11 @@ const actualizarConcierto = async (req, res) => {
       imagenUrl = await subirImagenACloudinary(req.file.buffer);
     }
 
-    const [resultado] = await pool.query(
+    const resultado = await pool.query(
       `UPDATE conciertos
-       SET titulo = ?, descripcion = ?, fecha = ?, hora = ?, generos = ?,
-           precio = ?, imagen = ?, instagram = ?, facebook = ?, youtube = ?, destacado = ?
-       WHERE id = ?`,
+       SET titulo = $1, descripcion = $2, fecha = $3, hora = $4, generos = $5,
+           precio = $6, imagen = $7, instagram = $8, facebook = $9, youtube = $10, destacado = $11
+       WHERE id = $12`,
       [
         titulo, descripcion, fecha, hora, generos, precio, imagenUrl,
         instagram || null, facebook || null, youtube || null,
@@ -103,7 +104,7 @@ const actualizarConcierto = async (req, res) => {
       ]
     );
 
-    if (resultado.affectedRows === 0) return res.status(404).json({ mensaje: 'Concierto no encontrado' });
+    if (resultado.rowCount === 0) return res.status(404).json({ mensaje: 'Concierto no encontrado' });
 
     res.json({
       id, titulo, descripcion, fecha, hora, generos, precio,
@@ -118,8 +119,8 @@ const actualizarConcierto = async (req, res) => {
 const eliminarConcierto = async (req, res) => {
   try {
     const { id } = req.params;
-    const [resultado] = await pool.query('DELETE FROM conciertos WHERE id = ?', [id]);
-    if (resultado.affectedRows === 0) return res.status(404).json({ mensaje: 'Concierto no encontrado' });
+    const resultado = await pool.query('DELETE FROM conciertos WHERE id = $1', [id]);
+    if (resultado.rowCount === 0) return res.status(404).json({ mensaje: 'Concierto no encontrado' });
     res.json({ mensaje: 'Concierto eliminado correctamente' });
   } catch (error) {
     res.status(500).json({ mensaje: 'Error al eliminar el concierto', error: error.message });
@@ -128,7 +129,7 @@ const eliminarConcierto = async (req, res) => {
 
 const getConciertosDestacados = async (req, res) => {
   try {
-    const [rows] = await pool.query('SELECT * FROM conciertos WHERE destacado = TRUE ORDER BY fecha');
+    const { rows } = await pool.query('SELECT * FROM conciertos WHERE destacado = TRUE ORDER BY fecha');
     res.json(rows);
   } catch (error) {
     res.status(500).json({ mensaje: 'Error al obtener conciertos destacados', error: error.message });
