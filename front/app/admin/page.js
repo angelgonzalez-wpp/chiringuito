@@ -111,7 +111,7 @@ export default function AdminPage() {
   };
 
   return (
-    <main className="bg-cream min-h-screen px-6 py-12">
+    <main className="bg-cream min-h-screen px-6 pt-28 pb-12">
       <div className="mx-auto max-w-5xl">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-6 border-b border-black/10 mb-8">
           <div>
