@@ -1,20 +1,9 @@
-import { Fraunces, Inter } from 'next/font/google';
+import '@fontsource-variable/fraunces';
+import '@fontsource-variable/fraunces/wght-italic.css';
+import '@fontsource-variable/inter';
 import './globals.css';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
-
-const fraunces = Fraunces({
-  subsets: ['latin'],
-  weight: ['400', '500', '600'],
-  style: ['normal', 'italic'],
-  variable: '--font-fraunces'
-});
-
-const inter = Inter({
-  subsets: ['latin'],
-  weight: ['400', '500', '600', '700'],
-  variable: '--font-inter'
-});
 
 export const metadata = {
   title: 'El CiD — La buena vida · Mojácar Playa, Almería',
@@ -24,7 +13,7 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="es" className={`${fraunces.variable} ${inter.variable}`}>
+    <html lang="es">
       <body className="font-sans">
         <Header />
         {children}

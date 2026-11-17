@@ -2,6 +2,11 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+  --font-fraunces: 'Fraunces Variable';
+  --font-inter: 'Inter Variable';
+}
+
 html {
   scroll-behavior: smooth;
 }
