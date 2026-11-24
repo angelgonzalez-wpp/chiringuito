@@ -7,7 +7,7 @@ const API_URL = process.env.API_URL || 'http://localhost:3000';
 
 async function getConciertos() {
   try {
-    const res = await fetch(`${API_URL}/api/conciertos`, { cache: 'no-store' });
+    const res = await fetch(`${API_URL}/api/conciertos?proximos=true`, { cache: 'no-store' });
     if (!res.ok) return [];
     return res.json();
   } catch (error) {

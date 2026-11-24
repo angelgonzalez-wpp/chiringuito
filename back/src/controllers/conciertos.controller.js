@@ -7,16 +7,30 @@ const subirImagenACloudinary = (buffer) => {
       { folder: 'chiringuito/conciertos' },
       (error, resultado) => {
         if (error) return reject(error);
-        resolve(resultado.secure_url);
+        resolve(
+          cloudinary.url(resultado.public_id, {
+            secure: true,
+            transformation: [
+              { width: 1600, height: 1200, crop: 'limit' },
+              { quality: 'auto', fetch_format: 'auto' }
+            ]
+          })
+        );
       }
     );
     stream.end(buffer);
   });
 };
 
+// Un concierto sigue vigente hasta que pasa su fecha y hora (hora de Madrid)
+const FILTRO_PROXIMOS = "(fecha + hora) >= (NOW() AT TIME ZONE 'Europe/Madrid')";
+
 const getConciertos = async (req, res) => {
   try {
-    const { rows } = await pool.query('SELECT * FROM conciertos ORDER BY fecha, hora');
+    const soloProximos = req.query.proximos === 'true';
+    const { rows } = await pool.query(
+      `SELECT * FROM conciertos ${soloProximos ? `WHERE ${FILTRO_PROXIMOS}` : ''} ORDER BY fecha, hora`
+    );
     res.json(rows);
   } catch (error) {
     res.status(500).json({ mensaje: 'Error al obtener conciertos', error: error.message });
@@ -129,7 +143,9 @@ const eliminarConcierto = async (req, res) => {
 
 const getConciertosDestacados = async (req, res) => {
   try {
-    const { rows } = await pool.query('SELECT * FROM conciertos WHERE destacado = TRUE ORDER BY fecha');
+    const { rows } = await pool.query(
+      `SELECT * FROM conciertos WHERE destacado = TRUE AND ${FILTRO_PROXIMOS} ORDER BY fecha, hora`
+    );
     res.json(rows);
   } catch (error) {
     res.status(500).json({ mensaje: 'Error al obtener conciertos destacados', error: error.message });

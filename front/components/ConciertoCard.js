@@ -1,3 +1,5 @@
+import Image from 'next/image';
+
 const formatearFecha = (fechaISO) => {
   const fecha = new Date(fechaISO + 'T00:00:00');
   const texto = fecha.toLocaleDateString('es-ES', {
@@ -31,10 +33,11 @@ export default function ConciertoCard({ concierto }) {
   return (
     <article className="bg-white flex flex-col border border-black/5" data-concert-card>
       <div className="group relative aspect-[4/3] w-full overflow-hidden bg-stone/10">
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
+        <Image
           src={imagen || '/images/MultitudEnUnConcierto.png'}
           alt={titulo}
+          fill
+          sizes="(max-width: 768px) 100vw, (max-width: 1280px) 50vw, 33vw"
           className="absolute inset-0 w-full h-full object-cover motion-safe:transition-transform motion-safe:duration-700 motion-safe:group-hover:scale-105"
         />
         <div className="image-edge-vignette pointer-events-none absolute inset-0" />

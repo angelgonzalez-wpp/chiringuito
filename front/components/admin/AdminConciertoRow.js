@@ -1,5 +1,7 @@
 'use client';
 
+import Image from 'next/image';
+
 const formatearFechaCorta = (fechaISO) => {
   const fecha = new Date(fechaISO + 'T00:00:00');
   return fecha.toLocaleDateString('es-ES', {
@@ -17,13 +19,14 @@ export default function AdminConciertoRow({ concierto, onEditar, onEliminar }) {
   return (
     <div className="flex flex-col sm:flex-row gap-4 border border-black/5 bg-white p-4">
       <div className="relative w-full sm:w-32 h-32 shrink-0 overflow-hidden bg-stone/10">
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
+        <Image
           src={
             imagen ||
             '/images/MultitudEnUnConcierto.png'
           }
           alt={titulo}
+          fill
+          sizes="(max-width: 640px) 100vw, 128px"
           className="absolute inset-0 w-full h-full object-cover"
         />
       </div>

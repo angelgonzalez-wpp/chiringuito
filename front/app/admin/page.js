@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import AdminConciertoRow from '@/components/admin/AdminConciertoRow';
 import ConciertoFormModal from '@/components/admin/ConciertoFormModal';
 import DeleteConfirmModal from '@/components/admin/DeleteConfirmModal';
+import LoadingState from '@/components/ui/LoadingState';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
 
@@ -181,7 +182,7 @@ export default function AdminPage() {
         </div>
 
         {cargando ? (
-          <p className="text-stone text-center py-16">Cargando conciertos...</p>
+          <LoadingState message="Cargando conciertos..." className="py-16" />
         ) : error ? (
           <p className="text-red-600 text-center py-16">{error}</p>
         ) : conciertosFiltrados.length === 0 ? (

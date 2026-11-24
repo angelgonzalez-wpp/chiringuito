@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import LoadingState from '@/components/ui/LoadingState';
 
 export default function LoginPage() {
   const router = useRouter();
@@ -85,6 +86,14 @@ export default function LoginPage() {
           >
             {cargando ? 'Entrando...' : 'Entrar'}
           </button>
+
+          {cargando ? (
+            <LoadingState
+              message="Conectando con el servidor..."
+              hint="Si estaba dormido, puede tardar hasta un minuto."
+              className="py-2"
+            />
+          ) : null}
         </form>
       </div>
     </main>

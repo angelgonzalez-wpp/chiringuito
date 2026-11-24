@@ -2,6 +2,7 @@
 
 import { useLayoutEffect, useRef, useState } from 'react';
 import gsap from 'gsap';
+import Image from 'next/image';
 
 const formatearFecha = (fechaISO) => {
   const fecha = new Date(fechaISO + 'T00:00:00');
@@ -121,13 +122,14 @@ export default function DestacadosCarousel({ conciertos }) {
         }}
       >
         <div className="absolute inset-0" ref={slideRef}>
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
+          <Image
             src={
               actual.imagen ||
               '/images/MultitudEnUnConcierto.png'
             }
             alt={actual.titulo}
+            fill
+            sizes="(max-width: 640px) 100vw, 896px"
             className="absolute inset-0 h-full w-full object-cover motion-safe:transition-transform motion-safe:duration-700 motion-safe:group-hover:scale-105"
           />
           <div className="image-edge-vignette pointer-events-none absolute inset-0" />
